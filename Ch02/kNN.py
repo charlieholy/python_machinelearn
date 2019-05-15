@@ -16,17 +16,30 @@ import operator
 from os import listdir
 
 def classify0(inX, dataSet, labels, k):
+    print(dataSet.shape)
     dataSetSize = dataSet.shape[0]
-    diffMat = np.tile(inX, (dataSetSize, 1)) - dataSet
+    p =   np.tile(inX, (dataSetSize, 1))
+    print(p)
+    diffMat = p - dataSet
+    print(diffMat)
     sqDiffMat = diffMat**2
+    print(sqDiffMat)
     sqDistances = sqDiffMat.sum(axis=1)
+    print(sqDistances)
     distances = sqDistances**0.5
+    print(distances)
     sortedDistIndicies = distances.argsort()
+    print(sortedDistIndicies)
     classCount = {}
     for i in range(k):
-        voteIlabel = labels[sortedDistIndicies[i]]
+        a = sortedDistIndicies[i]
+        print(a)
+        voteIlabel = labels[a]
+        print(voteIlabel)
         classCount[voteIlabel] = classCount.get(voteIlabel, 0) + 1
     sortedClassCount = sorted(classCount.items(), key=operator.itemgetter(1), reverse=True)
+    # [('B', 2), ('A', 1)]   k=3 B有两个 A只有一个 接近B
+    print(sortedClassCount)
     return sortedClassCount[0][0]
 
 def createDataSet():
