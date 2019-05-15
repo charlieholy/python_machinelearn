@@ -58,7 +58,9 @@ def file2matrix(filename):
     for line in arrayOLines:
         line = line.strip()
         listFromLine = line.split('\t')
+        print(listFromLine)
         returnMat[index, :] = listFromLine[0:3]
+        print(returnMat)
         if(listFromLine[-1].isdigit()):
             classLabelVector.append(int(listFromLine[-1]))
         else:
@@ -81,6 +83,9 @@ def datingClassTest():
     hoRatio = 0.50      #hold out 10%
     datingDataMat, datingLabels = file2matrix('datingTestSet2.txt')       #load data setfrom file
     normMat, ranges, minVals = autoNorm(datingDataMat)
+    print(normMat)
+    print(ranges)
+    print(minVals)
     m = normMat.shape[0]
     numTestVecs = int(m*hoRatio)
     errorCount = 0.0
