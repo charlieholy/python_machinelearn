@@ -16,30 +16,30 @@ import operator
 from os import listdir
 
 def classify0(inX, dataSet, labels, k):
-    print(dataSet.shape)
+    #print(dataSet.shape)
     dataSetSize = dataSet.shape[0]
     p =   np.tile(inX, (dataSetSize, 1))
-    print(p)
+    #print(p)
     diffMat = p - dataSet
-    print(diffMat)
+    #print(diffMat)
     sqDiffMat = diffMat**2
-    print(sqDiffMat)
+    #print(sqDiffMat)
     sqDistances = sqDiffMat.sum(axis=1)
-    print(sqDistances)
+    #print(sqDistances)
     distances = sqDistances**0.5
-    print(distances)
+    #print(distances)
     sortedDistIndicies = distances.argsort()
-    print(sortedDistIndicies)
+    #print(sortedDistIndicies)
     classCount = {}
     for i in range(k):
         a = sortedDistIndicies[i]
-        print(a)
+        #print(a)
         voteIlabel = labels[a]
-        print(voteIlabel)
+        #print(voteIlabel)
         classCount[voteIlabel] = classCount.get(voteIlabel, 0) + 1
     sortedClassCount = sorted(classCount.items(), key=operator.itemgetter(1), reverse=True)
     # [('B', 2), ('A', 1)]   k=3 B有两个 A只有一个 接近B
-    print(sortedClassCount)
+    #print(sortedClassCount)
     return sortedClassCount[0][0]
 
 def createDataSet():
@@ -58,9 +58,9 @@ def file2matrix(filename):
     for line in arrayOLines:
         line = line.strip()
         listFromLine = line.split('\t')
-        print(listFromLine)
+        # print(listFromLine)
         returnMat[index, :] = listFromLine[0:3]
-        print(returnMat)
+        # print(returnMat)
         if(listFromLine[-1].isdigit()):
             classLabelVector.append(int(listFromLine[-1]))
         else:
@@ -70,9 +70,12 @@ def file2matrix(filename):
 
 
 def autoNorm(dataSet):
+    #print(dataSet)
     minVals = dataSet.min(0)
     maxVals = dataSet.max(0)
     ranges = maxVals - minVals
+    a = np.shape(dataSet)
+    #print(a)
     normDataSet = np.zeros(np.shape(dataSet))
     m = dataSet.shape[0]
     normDataSet = dataSet - np.tile(minVals, (m, 1))
@@ -83,17 +86,20 @@ def datingClassTest():
     hoRatio = 0.50      #hold out 10%
     datingDataMat, datingLabels = file2matrix('datingTestSet2.txt')       #load data setfrom file
     normMat, ranges, minVals = autoNorm(datingDataMat)
-    print(normMat)
-    print(ranges)
-    print(minVals)
+    #print(normMat)
+    #print(ranges)
+    #print(minVals)
     m = normMat.shape[0]
     numTestVecs = int(m*hoRatio)
     errorCount = 0.0
+    k = 0
     for i in range(numTestVecs):
         classifierResult = classify0(normMat[i, :], normMat[numTestVecs:m, :], datingLabels[numTestVecs:m], 3)
         print("the classifier came back with: %d, the real answer is: %d" % (classifierResult, datingLabels[i]))
         if (classifierResult != datingLabels[i]): errorCount += 1.0
+        k = k+1
     print("the total error rate is: %f" % (errorCount / float(numTestVecs)))
+    print(k)
     print(errorCount)
 
 def classifyPerson():
