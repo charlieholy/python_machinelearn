@@ -41,10 +41,8 @@ def splitDataSet(dataSet, axis, value):
     # 先是x 遍历0-1 再是y 遍历0-1
     retDataSet = []
     for featVec in dataSet:
-       # print(featVec) # [1, 1, 'yes']
+        #print(featVec) # [1, 1, 'yes']
         if featVec[axis] == value:
-            #print(axis)
-            #print(value)
             reducedFeatVec = featVec[:axis]     #chop out axis used for splitting
             #print(reducedFeatVec)
             c1 = featVec[axis+1:]
@@ -52,6 +50,7 @@ def splitDataSet(dataSet, axis, value):
             reducedFeatVec.extend(c1)
             #print(reducedFeatVec)
             retDataSet.append(reducedFeatVec)
+            #print(retDataSet)
     return retDataSet
 
 def chooseBestFeatureToSplit(dataSet):
@@ -78,12 +77,13 @@ def chooseBestFeatureToSplit(dataSet):
                             # [[1, 'no']]#
                             # [[1, 'yes'], [1, 'yes'], [0, 'no'], [0, 'no']]
             prob = len(subDataSet)/float(len(dataSet))
-            print(prob)
+            #print(prob)
             newEntropy += prob * calcShannonEnt(subDataSet)
             #print('baseEntropy: ' , baseEntropy)
-            print('newEntropy',newEntropy)
+            #print('newEntropy',newEntropy)
         infoGain = baseEntropy - newEntropy     #calculate the info gain; ie reduction in entropy
         #print('ingoGain',infoGain)  #以下是为了选出最接近的熵
+
         if (infoGain > bestInfoGain):       #compare this to the best gain so far
             bestInfoGain = infoGain         #if better than current best, set to best
             bestFeature = i
