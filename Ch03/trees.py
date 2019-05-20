@@ -16,44 +16,78 @@ def createDataSet():
     #change to discrete values
     return dataSet, labels
 
+
 def calcShannonEnt(dataSet):
-    numEntries = len(dataSet)
-    labelCounts = {}
-    for featVec in dataSet: #the the number of unique elements and their occurance
-        currentLabel = featVec[-1]
-        if currentLabel not in labelCounts.keys(): labelCounts[currentLabel] = 0
-        labelCounts[currentLabel] += 1
-    shannonEnt = 0.0
-    for key in labelCounts:
-        prob = float(labelCounts[key])/numEntries
-        shannonEnt -= prob * log(prob, 2) #log base 2
-    return shannonEnt
+   # print(dataSet)
+    numEntires = len(dataSet)                        #返回数据集的行数
+    labelCounts = {}                                #保存每个标签(Label)出现次数的字典
+    for featVec in dataSet:                            #对每组特征向量进行统计
+        currentLabel = featVec[-1]                    #提取标签(Label)信息
+        #print(currentLabel)
+        if currentLabel not in labelCounts.keys():    #如果标签(Label)没有放入统计次数的字典,添加进去
+            labelCounts[currentLabel] = 0
+        labelCounts[currentLabel] += 1                #Label计数
+   # print(labelCounts)
+    shannonEnt = 0.0                                #经验熵(香农熵)
+    for key in labelCounts:                            #计算香农熵
+        prob = float(labelCounts[key]) / numEntires    #选择该标签(Label)的概率
+      #  print(prob)
+        shannonEnt -= prob * log(prob, 2)            #利用公式计算
+    return shannonEnt                                #返回经验熵(香农熵)
+
 
 def splitDataSet(dataSet, axis, value):
+
+    # 先是x 遍历0-1 再是y 遍历0-1
     retDataSet = []
     for featVec in dataSet:
+       # print(featVec) # [1, 1, 'yes']
         if featVec[axis] == value:
+            #print(axis)
+            #print(value)
             reducedFeatVec = featVec[:axis]     #chop out axis used for splitting
-            reducedFeatVec.extend(featVec[axis+1:])
+            #print(reducedFeatVec)
+            c1 = featVec[axis+1:]
+            #print(c1)
+            reducedFeatVec.extend(c1)
+            #print(reducedFeatVec)
             retDataSet.append(reducedFeatVec)
     return retDataSet
 
 def chooseBestFeatureToSplit(dataSet):
     numFeatures = len(dataSet[0]) - 1      #the last column is used for the labels
+    #print(numFeatures)  # 2
     baseEntropy = calcShannonEnt(dataSet)
+    #print(baseEntropy)  # 0.9709505944546686
     bestInfoGain = 0.0; bestFeature = -1
-    for i in range(numFeatures):        #iterate over all the features
+    #print(range(numFeatures))  # range(0,2)
+    for i in range(numFeatures):
+        #print(i) #  0 1     两个维度 x-axis and y-axis
         featList = [example[i] for example in dataSet]#create a list of all the examples of this feature
+        #print(featList) #[1, 1, 1, 0, 0]
+                        #[1, 1, 0, 1, 1]
         uniqueVals = set(featList)       #get a set of unique values
+        #print(uniqueVals)  # {0,1}
+                            # {0,1}
         newEntropy = 0.0
         for value in uniqueVals:
+            #print(value)   #0#1#0#1
             subDataSet = splitDataSet(dataSet, i, value)
+            #print(subDataSet)#[[1, 'no'], [1, 'no']]
+                            # [[1, 'yes'], [1, 'yes'], [0, 'no']]#
+                            # [[1, 'no']]#
+                            # [[1, 'yes'], [1, 'yes'], [0, 'no'], [0, 'no']]
             prob = len(subDataSet)/float(len(dataSet))
+            print(prob)
             newEntropy += prob * calcShannonEnt(subDataSet)
+            #print('baseEntropy: ' , baseEntropy)
+            print('newEntropy',newEntropy)
         infoGain = baseEntropy - newEntropy     #calculate the info gain; ie reduction in entropy
+        #print('ingoGain',infoGain)  #以下是为了选出最接近的熵
         if (infoGain > bestInfoGain):       #compare this to the best gain so far
             bestInfoGain = infoGain         #if better than current best, set to best
             bestFeature = i
+    #print(bestFeature)
     return bestFeature                      #returns an integer
 
 def majorityCnt(classList):
