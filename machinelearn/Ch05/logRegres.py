@@ -22,7 +22,7 @@ def gradAscent(dataMatIn, classLabels):
     dataMatrix = np.mat(dataMatIn)             #convert to NumPy matrix
     #print(dataMatrix)
     labelMat = np.mat(classLabels).transpose() #convert to NumPy matrix
-    print(labelMat)
+    #print(labelMat)
     m, n = np.shape(dataMatrix)
     alpha = 0.001
     maxCycles = 500
@@ -36,6 +36,8 @@ def gradAscent(dataMatIn, classLabels):
         #print(h)
         error = (labelMat - h)              #vector subtraction
         #print(error)
+        tr = dataMatrix.transpose()
+        #print(tr)
         weights = weights + alpha * dataMatrix.transpose()* error #matrix mult
     return weights
 
